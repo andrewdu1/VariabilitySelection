@@ -1,4 +1,4 @@
-# 3. run capture-mark-recapture (CMR) analyses
+# 3. run & plot capture-mark-recapture (CMR) analyses
 
 # Author: Andrew Du
 # Date: 4-21-21
