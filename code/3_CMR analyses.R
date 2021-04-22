@@ -8,7 +8,7 @@
 spec.time_cf.lump <- read.csv("modified datasets/species by time matrix lump cf.csv", header = TRUE, row.names = 1)
 spec.time_drop <- read.csv("modified datasets/species by time matrix drop cf.csv", header = TRUE, row.names = 1)
 
-## load RMark package
+## load RMark package. NB: Need to have MARK installed on your computer first (http://www.phidot.org/software/mark/)
 library(RMark)
 
 ## Convert matrices into .inp files
