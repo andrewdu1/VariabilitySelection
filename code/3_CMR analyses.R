@@ -60,7 +60,7 @@ bins <- seq(3.75, 0, -0.25)
 ## bin age midpoints for plotting
 time.bin.plot <- rev(bins)[-length(bins)] + .25 / 2
 
-## (1) cf. lumped results
+## (1) cf. lumped results (Fig. 4B)
 CMR_cf.lump <- CMR.res$neo_cf.lump
 
 ### Origination probability
@@ -90,7 +90,7 @@ polygon(c(time.bin.plot[-1], rev(time.bin.plot[-1])),
         col = adjustcolor("red", alpha.f = 0.2),
         border = NA)
 
-### Sampling probability
+### Sampling probability (Fig. 4C)
 plot(time.bin.plot, 
      rev(CMR_cf.lump$estimate[grep("p", rownames(CMR_cf.lump))]), 
      ylim = c(0, 1), 
