@@ -44,3 +44,113 @@ CMR <- lapply(neo.prad, function(x) mark(x, model.parameters = list(Phi = Phi.t,
 
 ## subset out estimated parameters of interest
 CMR.res <- lapply(CMR, function(x) x$results$real)
+
+## save results
+saveRDS(CMR.res, file = "CMR files/CMR results.rds")
+
+
+
+####################################################
+
+# Plotting the CMR results. NB: plots were modified in Illustrator after being created in R
+
+## create time bins of 0.25 Myr from 3.75-0 Ma
+bins <- seq(3.75, 0, -0.25)
+
+## bin age midpoints for plotting
+time.bin.plot <- rev(bins)[-length(bins)] + .25 / 2
+
+## (1) cf. lumped results
+CMR_cf.lump <- CMR.res$neo_cf.lump
+
+### Origination probability
+plot(time.bin.plot[-length(time.bin.plot)], 
+     rev(1 - CMR_cf.lump$estimate[grep("Gamma", rownames(CMR_cf.lump))]), 
+     ylim = c(0, 1), 
+     type = "l",
+     lwd = 3,
+     col = "blue", 
+     xlim = range(bins), 
+     xlab = "Time (Ma)", 
+     ylab = "Probability", 
+     cex.axis = 1.5, 
+     cex.lab = 1.5)
+polygon(c(time.bin.plot[-length(time.bin.plot)], rev(time.bin.plot[-length(time.bin.plot)])),
+        c(rev(1 - CMR_cf.lump$lcl[grep("Gamma", rownames(CMR_cf.lump))]), 1 - CMR_cf.lump$ucl[grep("Gamma", rownames(CMR_cf.lump))]),
+        col = adjustcolor("blue", alpha.f = 0.2),
+        border = NA)
+
+### Add extinction probability
+lines(time.bin.plot[-1], 
+      rev(1 - CMR_cf.lump$estimate[grep("Phi", rownames(CMR_cf.lump))]), 
+      lwd = 3,
+      col = "red")
+polygon(c(time.bin.plot[-1], rev(time.bin.plot[-1])),
+        c(rev(1 - CMR_cf.lump$lcl[grep("Phi", rownames(CMR_cf.lump))]), 1 - CMR_cf.lump$ucl[grep("Phi", rownames(CMR_cf.lump))]),
+        col = adjustcolor("red", alpha.f = 0.2),
+        border = NA)
+
+### Sampling probability
+plot(time.bin.plot, 
+     rev(CMR_cf.lump$estimate[grep("p", rownames(CMR_cf.lump))]), 
+     ylim = c(0, 1), 
+     type = "l",
+     lty = 2, 
+     lwd = 3,
+     xlim = range(bins), 
+     xlab = "Time (Ma)", 
+     ylab = "Probability", 
+     cex.axis = 1.5, 
+     cex.lab = 1.5)
+polygon(c(time.bin.plot, rev(time.bin.plot)),
+        c(rev(CMR_cf.lump$lcl[grep("p", rownames(CMR_cf.lump))]), CMR_cf.lump$ucl[grep("p", rownames(CMR_cf.lump))]),
+        col = adjustcolor("gray", alpha.f = 0.2),
+        border = NA)
+
+
+## (2) dropping cf results
+CMR_drop <- CMR.res$neo_drop
+
+### Origination probability
+plot(time.bin.plot[-length(time.bin.plot)], 
+     rev(1 - CMR_drop$estimate[grep("Gamma", rownames(CMR_drop))]), 
+     ylim = c(0, 1), 
+     type = "l",
+     lwd = 3,
+     col = "blue", 
+     xlim = range(bins), 
+     xlab = "Time (Ma)", 
+     ylab = "Probability", 
+     cex.axis = 1.5, 
+     cex.lab = 1.5)
+polygon(c(time.bin.plot[-length(time.bin.plot)], rev(time.bin.plot[-length(time.bin.plot)])),
+        c(rev(1 - CMR_drop$lcl[grep("Gamma", rownames(CMR_drop))]), 1 - CMR_drop$ucl[grep("Gamma", rownames(CMR_drop))]),
+        col = adjustcolor("blue", alpha.f = 0.2),
+        border = NA)
+
+### Add extinction probability
+lines(time.bin.plot[-1], 
+      rev(1 - CMR_drop$estimate[grep("Phi", rownames(CMR_drop))]), 
+      lwd = 3,
+      col = "red")
+polygon(c(time.bin.plot[-1], rev(time.bin.plot[-1])),
+        c(rev(1 - CMR_drop$lcl[grep("Phi", rownames(CMR_drop))]), 1 - CMR_drop$ucl[grep("Phi", rownames(CMR_drop))]),
+        col = adjustcolor("red", alpha.f = 0.2),
+        border = NA)
+
+### Sampling probability
+plot(time.bin.plot, 
+     rev(CMR_drop$estimate[grep("p", rownames(CMR_drop))]), 
+     ylim = c(0, 1), 
+     type = "l",
+     lty = 2, 
+     lwd = 3,
+     xlim = range(bins), 
+     xlab = "Time (Ma)", 
+     ylab = "Probability", 
+     cex.axis = 1.5, 
+     cex.lab = 1.5)
+polygon(c(time.bin.plot, rev(time.bin.plot)),
+        c(rev(CMR_drop$lcl[grep("p", rownames(CMR_drop))]), CMR_drop$ucl[grep("p", rownames(CMR_drop))]),
+        col = adjustcolor("gray", alpha.f = 0.2),
+        border = NA)
