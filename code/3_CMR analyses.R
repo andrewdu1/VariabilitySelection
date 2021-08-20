@@ -1,12 +1,15 @@
 # 3. run & plot capture-mark-recapture (CMR) analyses
 
 # Author: Andrew Du
-# Date: 4-21-21
+# Date: 4-21-21 (revised 7-27-21)
 
 
 ## read in species-by-time matrices
 spec.time_cf.lump <- read.csv("modified datasets/species by time matrix lump cf.csv", header = TRUE, row.names = 1)
 spec.time_drop <- read.csv("modified datasets/species by time matrix drop cf.csv", header = TRUE, row.names = 1)
+
+turk_spec.time_cf.lump <- read.csv("modified Datasets/Turkana species by time matrix lump cf.csv", header = TRUE, row.names = 1)
+turk_spec.time_drop <- read.csv("modified Datasets/Turkana species by time matrix drop cf.csv", header = TRUE, row.names = 1)
 
 ## load RMark package. NB: Need to have MARK installed on your computer first (http://www.phidot.org/software/mark/)
 library(RMark)
@@ -49,10 +52,43 @@ CMR.res <- lapply(CMR, function(x) x$results$real)
 saveRDS(CMR.res, file = "CMR files/CMR results.rds")
 
 
+### Do the same but for Turkana
+## Convert matrices into .inp files
+turk_filename_cf.lump <- "CMR files/Turkana_dataMatrix_CMR_cfLump.inp"
+turk_filename_drop <- "CMR files/Turkana_dataMatrix_CMR_drop.inp"
+
+## Code modified after Smiley 2018 in Paleobiology
+for(i in seq_len(nrow(turk_spec.time_cf.lump))){
+  vec <- paste(c(turk_spec.time_cf.lump[i, ], " 1;"), collapse = "")
+  write(vec, turk_filename_cf.lump, append = ifelse(i == 1, FALSE, TRUE))
+}
+
+for(i in seq_len(nrow(turk_spec.time_drop))){
+  vec <- paste(c(turk_spec.time_drop[i, ], " 1;"), collapse = "")
+  write(vec, turk_filename_drop, append = ifelse(i == 1, FALSE, TRUE))
+}
+
+turk_neo_cf.lump <- convert.inp(turk_filename_cf.lump)
+turk_neo_drop <- convert.inp(turk_filename_drop)
+
+turk_neo <- list(neo_cf.lump = turk_neo_cf.lump, neo_drop = turk_neo_drop)
+
+## process data to fit Pradsen model
+turk_neo.prad <- lapply(turk_neo, function(x) process.data(x, model = "Pradsen"))
+
+## run time-varying model
+turk_CMR <- lapply(turk_neo.prad, function(x) mark(x, model.parameters = list(Phi = Phi.t, p = p.t, Gamma = Gamma.t), delete = TRUE))
+
+## subset out estimated parameters of interest
+turk_CMR.res <- lapply(turk_CMR, function(x) x$results$real)
+
+## save results
+saveRDS(turk_CMR.res, file = "CMR files/Turkana CMR results.rds")
+
 
 ####################################################
 
-# Plotting the CMR results. NB: plots were modified in Illustrator after being created in R
+# Plotting the CMR results (did not do this for Turkana results, but the code is the same). NB: plots were modified in Illustrator after being created in R
 
 ## create time bins of 0.25 Myr from 3.75-0 Ma
 bins <- seq(3.75, 0, -0.25)
