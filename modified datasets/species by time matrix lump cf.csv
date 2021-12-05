@@ -24,9 +24,6 @@
 "Antidorcas_marsupialis",0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
 "Antidorcas_recki",0,1,1,1,1,1,1,1,1,1,0,1,1,0,0
 "Antilope_aff_subtorta",0,0,0,1,0,0,0,0,0,0,0,0,0,0,0
-"Australopithecus_afarensis",1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
-"Australopithecus_deyiremeda",0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
-"Australopithecus_garhi",0,0,0,0,0,1,0,0,0,0,0,0,0,0,0
 "Beatragus_antiquus",0,0,0,0,0,0,1,1,1,1,0,0,0,0,0
 "Beatragus_hunteri",0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
 "Beatragus_vrbae",0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
@@ -98,13 +95,7 @@
 "Hippotragus_aff_cookei",0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
 "Hippotragus_equinus",0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 "Hippotragus_gigas",0,1,0,1,0,1,0,1,1,1,1,1,0,0,0
-"Homo_erectus",0,0,0,0,0,0,0,1,1,1,1,1,1,0,0
-"Homo_habilis",0,0,0,0,0,0,1,1,1,1,0,0,0,0,0
-"Homo_rudolfensis",0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
-"Homo_sapiens",0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
-"Homo_sp_Ledi_Geraru",0,0,0,1,0,0,0,0,0,0,0,0,0,0,0
 "Hylochoerus_meinertzhageni",0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
-"Kenyanthropus_platyops",1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
 "Kobus_ancystrocera",0,0,1,1,0,1,1,1,1,0,1,0,0,0,0
 "Kobus_ellipsiprymnus",0,0,0,0,0,0,1,1,1,1,1,1,0,0,1
 "Kobus_kob",1,1,1,1,0,1,1,1,1,1,1,1,1,0,1
@@ -147,8 +138,6 @@
 "Oreotragus_oreotragus",0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 "Oryx_beisa",0,0,0,0,0,0,0,0,0,0,1,0,0,1,1
 "Ourebia_ourebi",0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
-"Paranthropus_aethiopicus",0,0,0,1,1,1,0,0,0,0,0,0,0,0,0
-"Paranthropus_boisei",0,0,0,0,0,1,1,1,1,1,0,0,0,0,0
 "Parantidorcas_latifrons",0,0,0,1,0,0,0,0,0,0,0,0,0,0,0
 "Parmularius_aff_pachyceras",0,0,1,0,1,0,0,0,0,0,0,0,0,0,0
 "Parmularius_altidens",0,0,0,0,1,0,1,1,1,0,0,0,0,0,0

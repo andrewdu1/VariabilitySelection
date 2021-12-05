@@ -83,14 +83,6 @@
 "Ceratotherium_simum",0,0,0,0,0,0,0,0,0,0,1,1,1
 "Diceros_bicornis",0,0,0,0,0,0,0,0,0,1,1,0,1
 "Diceros_praecox",1,0,0,0,1,0,0,0,0,0,1,0,0
-"Australopithecus_afarensis",0,0,0,1,1,0,0,0,0,0,0,0,0
-"Australopithecus_anamensis",1,1,0,0,0,0,0,0,0,0,0,0,0
-"Homo_erectus",0,0,0,0,0,0,0,0,0,1,1,1,1
-"Homo_habilis",0,0,0,0,0,0,0,0,1,1,1,0,0
-"Homo_rudolfensis",0,0,0,0,0,0,0,0,0,1,0,0,0
-"Kenyanthropus_platyops",0,0,1,1,0,0,0,0,0,0,0,0,0
-"Paranthropus_aethiopicus",0,0,0,0,0,1,1,1,0,0,0,0,0
-"Paranthropus_boisei",0,0,0,0,0,0,0,1,1,1,1,1,0
 "Deinotherium_bozasi",1,1,1,1,1,1,1,1,1,1,1,1,0
 "Elephas_ekorensis",1,0,0,0,1,0,0,0,0,0,0,0,0
 "Elephas_recki",0,0,0,1,1,1,1,1,1,1,1,1,1

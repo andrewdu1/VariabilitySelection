@@ -11,8 +11,6 @@
 "Ancylotherium_hennigi",0,0,0,0,0,0,0,1,1,0,0,0,0
 "Antidorcas_recki",0,0,0,1,1,1,1,1,1,1,1,1,0
 "Antilope_aff_subtorta",0,0,0,0,0,1,0,0,0,0,0,0,0
-"Australopithecus_afarensis",0,0,0,1,1,0,0,0,0,0,0,0,0
-"Australopithecus_anamensis",1,1,0,0,0,0,0,0,0,0,0,0,0
 "Beatragus_antiquus",0,0,0,0,0,0,0,0,1,1,1,1,0
 "Beatragus_hunteri",0,0,0,0,0,0,0,0,0,0,0,0,1
 "Camelus_grattardi",0,0,0,0,1,0,0,1,1,0,1,0,0
@@ -48,10 +46,6 @@
 "Hippopotamus_gorgops",0,0,1,1,0,0,0,0,0,1,1,1,1
 "Hippopotamus_kaisensis",0,0,1,0,0,0,0,0,0,0,0,0,0
 "Hippotragus_gigas",0,0,0,1,0,1,0,0,0,1,1,1,0
-"Homo_erectus",0,0,0,0,0,0,0,0,0,1,1,1,1
-"Homo_habilis",0,0,0,0,0,0,0,0,1,1,1,0,0
-"Homo_rudolfensis",0,0,0,0,0,0,0,0,0,1,0,0,0
-"Kenyanthropus_platyops",0,0,1,1,0,0,0,0,0,0,0,0,0
 "Kobus_ancystrocera",0,0,0,0,1,1,0,1,1,1,1,0,1
 "Kobus_ellipsiprymnus",0,0,0,0,0,0,0,0,1,1,1,1,1
 "Kobus_kob",0,0,1,1,1,1,0,1,1,1,1,1,1
@@ -80,8 +74,6 @@
 "Notochoerus_scotti",0,0,0,1,0,1,1,1,1,1,1,0,0
 "Nyanzachoerus_jaegeri",1,1,0,0,0,0,0,0,0,0,0,0,0
 "Nyanzachoerus_kanamensis",1,1,1,1,1,0,0,0,0,0,0,0,0
-"Paranthropus_aethiopicus",0,0,0,0,0,1,1,1,0,0,0,0,0
-"Paranthropus_boisei",0,0,0,0,0,0,0,1,1,1,1,1,0
 "Parmularius_altidens",0,0,0,0,0,0,0,0,1,1,1,0,0
 "Parmularius_angusticornis",0,0,1,0,1,0,0,0,0,0,1,0,0
 "Pelorovis_oldowayensis",0,0,0,0,0,0,0,0,0,1,1,1,0
