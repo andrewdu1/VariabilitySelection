@@ -1,7 +1,7 @@
 # 1. clean up PA matrix
 
 # Author: Andrew Du
-# Date: 4-21-21
+# Date: 4-21-21 (revised 12/5/21)
 
 
 # Cleaning is going to be done in two ways:
@@ -9,7 +9,7 @@
 # (2) dropping sp., indet., and cf. species
 
 ## Read in data
-pa <- read.csv("data/PA matrix.csv", header = TRUE, strip.white = TRUE)
+pa <- read.csv("original datasets/PA matrix.csv", header = TRUE, strip.white = TRUE)
 
 # (1) lump cf species
 

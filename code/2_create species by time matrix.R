@@ -15,7 +15,7 @@ site <- read.csv("original datasets/site data.csv", header = TRUE, strip.white =
 turk.site <- site[site$Region == "Turkana", ]
 
 turk_pa_cf.lump <- pa_cf.lump[, colnames(pa_cf.lump) %in% turk.site$Unit]
-turk_pa_drop <- pa_drop[, colnames(pa_drop) %in% turk.sites$Unit]
+turk_pa_drop <- pa_drop[, colnames(pa_drop) %in% turk.site$Unit]
 
 ## create time bins of 0.25 Myr from 3.75-0 Ma. For Turkana, 4.25-1 Ma
 bins <- seq(3.75, 0, -0.25)
