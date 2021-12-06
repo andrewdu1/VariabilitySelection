@@ -79,6 +79,8 @@ turk_p.res <- lapply(turk.ccf, ccf_p.value) # turkana only
 ## see how many P-values are significant
 raw_p.vals <- c(unlist(ccf_p.res), unlist(turk_p.res)) # 4 out of 36 are significant
 
+p.res_BH <- p.adjust(raw_p.vals, method = "BH") # no comparisons are significant after BH correction
+
 
 ####################################################
 
@@ -91,7 +93,8 @@ ccf.df <- data.frame(ccf = c(c(ccf.hat), c(turk.hat)),
                         clim.var = rep(colnames(clim.var), each = 6), 
                         rate = rep(rep(c("origination", "extinction"), each = 3), 6), 
                         lag = rep(0:2, 12),
-                        p.val = raw_p.vals)
+                        raw.p = raw_p.vals,
+                        BH.p = p.res_BH)
 
 
 ####################################################
