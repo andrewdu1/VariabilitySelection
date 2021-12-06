@@ -19,7 +19,7 @@ clim.var1 <- clim.var1[, -ncol(clim.var1)]
 
 d13C <- clim.var$Turkana_psol_d13C # Turkana psol data only
 
-d13C <- d13C[rownames(clim.var) %in% seq(1125, 4125, 250)] # get out data sychronous with mammal data
+d13C <- d13C[rownames(clim.var) %in% seq(1125, 4125, 250)] # get out data synchronous with mammal data
 
 ## run CCF analyses
 
@@ -85,7 +85,7 @@ p.res_BH <- p.adjust(raw_p.vals, method = "BH") # no comparisons are significant
 
 ####################################################
 
-# New CCF plot (updated: 8-1-21)
+# New CCF plot (updated: 12-5-21)
 clim.bar <- lapply(ccf.res, function(x){
   
   x1 <- cbind(x$orig$acf, x$extinct$acf)
