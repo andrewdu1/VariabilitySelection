@@ -1,13 +1,37 @@
-# 3. cross-correlation analyses & plots
+# 4. cross-correlation analyses & plots
 
 # Author: Andrew Du
-# Date: 4-21-21 (revised 7-27-21)
+# Date: 4-21-21 (revised 1-3-21)
 
 
 ## Read in CMR results
 CMR.res <- readRDS("CMR files/CMR results.rds")
 
 turk_CMR.res <- readRDS("CMR files/Turkana CMR results.rds") # Turkana only
+
+# get out origination and extinction estimates for lumped cf treatment & combine into one list
+cmr_cf.lump <- CMR.res$neo_cf.lump # all localities cf lumped
+turk_cmr_lump <- turk_CMR.res$neo_cf.lump # turkana cf lumped
+
+cmr.rates <- list(
+  cf.lump_orig = 1 - cmr_cf.lump$estimate[grep("Gamma", rownames(cmr_cf.lump))], # all localities origination
+  cf.lump_extinct = 1 - cmr_cf.lump$estimate[grep("Phi", rownames(cmr_cf.lump))], # all localities extinction
+  turk_lump_orig = 1 - turk_cmr_lump$estimate[grep("Gamma", rownames(turk_cmr_lump))], # turkana origination
+  turk_lump_extinct = 1 - turk_cmr_lump$estimate[grep("Phi", rownames(turk_cmr_lump))] # turkana extinction
+)
+
+# create a list of ages, corresponding to rates in cmr.rates
+bins <- seq(3.75, 0, -0.25) # create time bins of 0.25 Myr from 3.75-0 Ma
+time.bin.mid <- bins[-length(bins)] + diff(bins)[1] / 2 # bin age midpoints
+
+turk.bin.mid <- seq(4.125, 1.125, -0.25) # time bin midpoints for 0.25 Myr from 4.125-1.125 for Turkana
+
+ages <- list(
+  cf.lump_orig_ages = time.bin.mid[-1],
+  cf.lump_extinct_ages = time.bin.mid[-length(time.bin.mid)],
+  turk_lump_orig_ages = turk.bin.mid[-1],
+  turk_lump_extinct_ages = turk.bin.mid[-length(turk.bin.mid)]
+)
 
 ## Read in climate variability data
 clim.var <- read.csv(file = "original datasets/climate variability 250ka bins.csv", header = TRUE, row.names = 1)
@@ -17,69 +41,74 @@ clim.var1 <- clim.var[seq(1, which(rownames(clim.var) == "3625")), ]
 
 clim.var1 <- clim.var1[, -ncol(clim.var1)]
 
+clim.var1 <- clim.var1[seq(nrow(clim.var1), 1), ] # reverse row order, so time bins match those of CMR rates
+
 d13C <- clim.var$Turkana_psol_d13C # Turkana psol data only
 
 d13C <- d13C[rownames(clim.var) %in% seq(1125, 4125, 250)] # get out data synchronous with mammal data
 
-## run CCF analyses
+d13C <- rev(d13C) # reverse row order, so time bins match those of CMR rates
 
-# get out origination and extinction estimates for lumped cf treatment
-cmr_cf.lump <- CMR.res$neo_cf.lump # all localities cf lumped
 
-cf.lump_orig <- rev(1 - cmr_cf.lump$estimate[grep("Gamma", rownames(cmr_cf.lump))]) # all localities origination
+####################################################
 
-cf.lump_extinct <- rev(1 - cmr_cf.lump$estimate[grep("Phi", rownames(cmr_cf.lump))]) # all localities extinction
-
-turk_cmr_lump <- turk_CMR.res$neo_cf.lump # turkana cf lumped
-
-turk_lump_orig <- rev(1 - turk_cmr_lump$estimate[grep("Gamma", rownames(turk_cmr_lump))]) # turkana origination
-
-turk_lump_extinct <- rev(1 - turk_cmr_lump$estimate[grep("Phi", rownames(turk_cmr_lump))]) # turkana extinction
-
-# run CCFs comparing climate and taxonomic rates
-ccf.res <- apply(clim.var1, 2, function(clim){ # iterate through each climate variable
+## Detrend each time series using a LOWESS regression
+# write a function to do this
+  # ARGUMENTS:
+    # age: age associated with each data point in the time series
+    # x: variable value associated with each data point
+    # span: smoothing span of LOWESS regression (passed on to lowess() function)
+detrend <- function(age, x, span = 2 / 3){
   
-  ### positive lags in ccf() are those where x is younger than y
-  orig.ccf <- ccf(cf.lump_orig, clim[-length(clim)], plot = FALSE)[0:2]
-  
-  extinct.ccf <- ccf(cf.lump_extinct, clim[-1], plot = FALSE)[0:2]
-  
-  return(list(orig = orig.ccf, extinct = extinct.ccf))
-})
-
-# run CCFs for Turkana and psol data (lag up to 2)
-turk.ccf <- list(
-  orig = ccf(turk_lump_orig, d13C[-length(d13C)], plot = FALSE)[0:2], 
-  extinct = ccf(turk_lump_extinct, d13C[-1], plot = FALSE)[0:2]
-)
-
-## create function for calculating p-values (two-tailed) from CCF results
-ccf_p.value <- function(ccf.res){
-  
-  ccf_hat <- as.numeric(ccf.res$acf)
-  ccf_se <- 1 / sqrt(ccf.res$n.used)
-  
-  res <- sapply(ccf_hat, function(x) ifelse(x < 0, pnorm(x, sd = ccf_se) * 2, pnorm(x, sd = ccf_se, lower.tail = FALSE) * 2))
-  
-  return(res)
+  lowess.res <- lowess(age, x, f = span)
+  return(x - lowess.res$y)
 }
 
-## calculate P-values for CCF analyses using ccf_p.value function
-ccf_p.res <- lapply(ccf.res, function(clim){
-  
-  orig <- ccf_p.value(clim$orig)
-  extinct <- ccf_p.value(clim$extinct)
-  
-  return(list(orig = orig, extinct = extinct))
-}) # all localities
+cmr.rates.detrend <- mapply(detrend, age = ages, x = cmr.rates)
 
-turk_p.res <- lapply(turk.ccf, ccf_p.value) # turkana only
 
+## run CCF analyses
+# create function for estimate CCF and its p-value
+  # ARGUMENTS: 
+    # climate: climate time series
+    # cmr_rate: CMR rate time series
+    # ccf.lag: max #lags to consider in CCF 
+    # acf.lag: max. # lags in ACF for computing SE 
+CCF <- function(climate, cmr_rate, ccf.lag, acf.lag){
+  
+  n <- length(climate)
+  
+  ccf.res <- ccf(cmr_rate, climate, plot = FALSE)[0:ccf.lag]
+  
+  ccf.hat <- ccf.res$acf
+  
+  acf.clim <- acf(climate, lag.max = acf.lag, plot = FALSE)$acf
+  acf.cmr <- acf(cmr_rate, lag.max = acf.lag, plot = FALSE)$acf
+  
+  ccf.se <- sqrt((1 + 2 * sum(acf.clim * acf.cmr)) / n)
+  
+  p.vals <- sapply(ccf.hat, function(x) pnorm(abs(x), sd = ccf.se, lower.tail = FALSE) * 2)
+  
+  return(list(lag.n = seq(0, ccf.lag), ccf.hat = ccf.hat, ccf.se = ccf.se, p.vals = p.vals))
+}
+
+# run CCFs for E. African data
+ccf.res.orig <- apply(clim.var1, 2, function(clim) CCF(climate = clim[-1], cmr_rate = cmr.rates$cf.lump_orig, ccf.lag = 2, acf.lag = length(clim) - 1))
+
+ccf.res.extinct <- apply(clim.var1, 2, function(clim) CCF(climate = clim[-length(clim)], cmr_rate = cmr.rates$cf.lump_extinct, ccf.lag = 2, acf.lag = length(clim) - 1))
+
+# run CCFs for Turkana data
+ccf.turk.orig <- CCF(climate = d13C[-1], cmr_rate = cmr.rates$turk_lump_orig, ccf.lag = 2, acf.lag = length(d13C) - 1)
+
+ccf.turk.extinct <- CCF(climate = d13C[-length(d13C)], cmr_rate = cmr.rates$turk_lump_extinct, ccf.lag = 2, acf.lag = length(d13C) - 1)
 
 ## see how many P-values are significant
-raw_p.vals <- c(unlist(ccf_p.res), unlist(turk_p.res)) # 4 out of 36 are significant
+p.vals <- c(sapply(ccf.res.orig, function(x) x$p.vals), 
+            sapply(ccf.res.extinct, function(x) x$p.vals),
+            ccf.turk.orig$p.vals,
+            ccf.turk.extinct$p.vals)
 
-p.res_BH <- p.adjust(raw_p.vals, method = "BH") # no comparisons are significant after BH correction
+sum(p.vals <= 0.05) # none are significant
 
 
 ####################################################
@@ -99,34 +128,36 @@ ccf.df <- data.frame(ccf = c(c(ccf.hat), c(turk.hat)),
 
 ####################################################
 
-# New CCF plot (updated: 12-5-21)
-clim.bar <- lapply(ccf.res, function(x){
+# CCF plot
+par(mfrow = c(3, 2), mar = c(5 - 1, 4, 4, 2) + 0.1)
+
+for(i in seq_along(ccf.res.orig)){
   
-  x1 <- cbind(x$orig$acf, x$extinct$acf)
-  colnames(x1) <- c("Origination", "Extinction")
-  rownames(x1) <- 0:2
+  ccf.mat <- cbind(as.numeric(ccf.res.orig[[i]]$ccf.hat), as.numeric(ccf.res.extinct[[i]]$ccf.hat))
   
-  return(x1)
-})
-
-clim.bar$Turkana_psol_d13C <- cbind(turk.ccf$orig$acf, turk.ccf$extinct$acf)
-colnames(clim.bar$Turkana_psol_d13C) <- c("Origination", "Extinction")
-rownames(clim.bar$Turkana_psol_d13C) <- 0:2
-
-clim.bar <- clim.bar[order(names(clim.bar))]
-
-
-par(mfrow = c(3, 2), mar = c(5, 4, 4, 2) + 0.1)
-
-i <- 1
-
-barplot(clim.bar[[i]], beside = TRUE, ylab = "Cross-correlation", cex.lab = 1.5, cex.axis = 1.5, cex.names = 1.5, legend.text = 0:2, args.legend = list(x = "topleft", cex = 1.5, title = "Number of lags", bty = "n"), main = names(clim.bar)[i], cex.main = 2, ylim = c(-1, 1))
-abline(h = 0)
-abline(v = 4.5, lty = 2)
-
-for(i in seq_along(clim.bar)[-1]){
+  barplot(ccf.mat, beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", names.arg = c("Origination", "Extinction"), main = names(ccf.res.orig)[i], cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 1.5)
   
-  barplot(clim.bar[[i]], beside = TRUE, ylab = "Cross-correlation", cex.lab = 1.5, cex.axis = 1.5, cex.names = 1.5, main = names(clim.bar)[i], cex.main = 2, ylim = c(-1, 1))
   abline(h = 0)
-  abline(v = 4.5, lty = 2)
+  abline(v = 4.5)
+  
+  # origination significance thresholds
+  segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.025), lty = 2)
+  segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.975), lty = 2)
+  
+  # extinction significance thresholds
+  segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.025), lty = 2)
+  segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.975), lty = 2)
 }
+
+barplot(cbind(as.numeric(ccf.turk.orig$ccf.hat), as.numeric(ccf.turk.extinct$ccf.hat)), beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", main = colnames(clim.var)[ncol(clim.var)], names.arg = c("Origination", "Extinction"), cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 1.5)
+
+abline(h = 0)
+abline(v = 4.5)
+
+# origination significance thresholds
+segments(x0 = 0, x1 = 4.5, y0 = ccf.turk.orig$ccf.se * qnorm(0.025), lty = 2)
+segments(x0 = 0, x1 = 4.5, y0 = ccf.turk.extinct$ccf.se * qnorm(0.975), lty = 2)
+
+# extinction significance thresholds
+segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.025), lty = 2)
+segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.975), lty = 2)
