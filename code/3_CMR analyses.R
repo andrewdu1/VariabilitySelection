@@ -94,7 +94,7 @@ saveRDS(turk_CMR.res, file = "CMR files/Turkana CMR results.rds")
 bins <- seq(3.75, 0, -0.25)
 
 ## bin age midpoints for plotting
-time.bin.plot <- bins[-length(bins)] - .25 / 2
+time.bin.plot <- bins[-length(bins)] + diff(bins)[1] / 2
 
 ## (1) cf. lumped results
 CMR_cf.lump <- CMR.res$neo_cf.lump
