@@ -131,7 +131,26 @@ ccf.df <- data.frame(ccf = c(c(ccf.hat), c(turk.hat)),
 # CCF plot
 par(mfrow = c(3, 2), mar = c(5 - 1, 4, 4, 2) + 0.1)
 
-for(i in seq_along(ccf.res.orig)){
+# plot the first CCF results by itself, so I can add a legend
+i <- 1
+
+ccf.mat <- cbind(as.numeric(ccf.res.orig[[i]]$ccf.hat), as.numeric(ccf.res.extinct[[i]]$ccf.hat))
+
+barplot(ccf.mat, beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", names.arg = c("Origination", "Extinction"), main = names(ccf.res.orig)[i], cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 1.5, legend.text = ccf.res.orig[[i]]$lag.n, args.legend = list(x = 3.5, y = 1, title = "Number of lags", bty = "n", cex = 1.25))
+
+abline(h = 0)
+abline(v = 4.5)
+
+# origination significance thresholds
+segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.025), lty = 2)
+segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.975), lty = 2)
+
+# extinction significance thresholds
+segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.025), lty = 2)
+segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.975), lty = 2)
+
+# iterate through rest of CCF results
+for(i in seq_along(ccf.res.orig)[-1]){
   
   ccf.mat <- cbind(as.numeric(ccf.res.orig[[i]]$ccf.hat), as.numeric(ccf.res.extinct[[i]]$ccf.hat))
   
@@ -149,6 +168,7 @@ for(i in seq_along(ccf.res.orig)){
   segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.975), lty = 2)
 }
 
+# Turkana CCF results
 barplot(cbind(as.numeric(ccf.turk.orig$ccf.hat), as.numeric(ccf.turk.extinct$ccf.hat)), beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", main = colnames(clim.var)[ncol(clim.var)], names.arg = c("Origination", "Extinction"), cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 1.5)
 
 abline(h = 0)
