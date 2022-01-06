@@ -81,7 +81,7 @@ cmr.rates.detrend <- mapply(detrend, age = ages, x = cmr.rates)
     # cmr_rate: CMR rate time series
     # ccf.lag: max #lags to consider in CCF 
     # acf.lag: max. # lags in ACF for computing SE 
-CCF <- function(climate, cmr_rate, ccf.lag, acf.lag.clim, acf.lag.cmr = acf.lag.clim){
+CCF <- function(climate, cmr_rate, ccf.lag, acf.lag){
   
   n <- length(climate)
   
@@ -89,8 +89,8 @@ CCF <- function(climate, cmr_rate, ccf.lag, acf.lag.clim, acf.lag.cmr = acf.lag.
   
   ccf.hat <- ccf.res$acf
   
-  acf.clim <- acf(climate, lag.max = acf.lag.clim, plot = FALSE)$acf
-  acf.cmr <- acf(cmr_rate, lag.max = acf.lag.cmr, plot = FALSE)$acf
+  acf.clim <- acf(climate, lag.max = acf.lag, plot = FALSE)$acf
+  acf.cmr <- acf(cmr_rate, lag.max = acf.lag, plot = FALSE)$acf
   
   ccf.se <- sqrt((1 + 2 * sum(acf.clim * acf.cmr)) / n)
   
@@ -100,14 +100,14 @@ CCF <- function(climate, cmr_rate, ccf.lag, acf.lag.clim, acf.lag.cmr = acf.lag.
 }
 
 # run CCFs for E. African data
-ccf.res.orig <- apply(clim.var1.detrend, 2, function(clim) CCF(climate = clim[-1], cmr_rate = cmr.rates.detrend$cf.lump_orig, ccf.lag = 2, acf.lag.clim = length(clim) - 1))
+ccf.res.orig <- apply(clim.var1.detrend, 2, function(clim) CCF(climate = clim[-1], cmr_rate = cmr.rates.detrend$cf.lump_orig, ccf.lag = 2, acf.lag = length(clim) - 1))
 
-ccf.res.extinct <- apply(clim.var1.detrend, 2, function(clim) CCF(climate = clim[-length(clim)], cmr_rate = cmr.rates.detrend$cf.lump_extinct, ccf.lag = 2, acf.lag.clim = length(clim) - 1))
+ccf.res.extinct <- apply(clim.var1.detrend, 2, function(clim) CCF(climate = clim[-length(clim)], cmr_rate = cmr.rates.detrend$cf.lump_extinct, ccf.lag = 2, acf.lag = length(clim) - 1))
 
 # run CCFs for Turkana data
-ccf.turk.orig <- CCF(climate = d13C.detrend[-1], cmr_rate = cmr.rates.detrend$turk_lump_orig, ccf.lag = 2, acf.lag.clim = length(d13C.detrend) - 1)
+ccf.turk.orig <- CCF(climate = d13C.detrend[-1], cmr_rate = cmr.rates.detrend$turk_lump_orig, ccf.lag = 2, acf.lag = length(d13C.detrend) - 1)
 
-ccf.turk.extinct <- CCF(climate = d13C.detrend[-length(d13C)], cmr_rate = cmr.rates.detrend$turk_lump_extinct, ccf.lag = 2, acf.lag.clim = length(d13C.detrend) - 1)
+ccf.turk.extinct <- CCF(climate = d13C.detrend[-length(d13C)], cmr_rate = cmr.rates.detrend$turk_lump_extinct, ccf.lag = 2, acf.lag = length(d13C.detrend) - 1)
 
 ## see how many P-values are significant
 p.vals <- c(sapply(ccf.res.orig, function(x) x$p.vals), 
@@ -116,7 +116,7 @@ p.vals <- c(sapply(ccf.res.orig, function(x) x$p.vals),
             ccf.turk.extinct$p.vals)
 
 sum(p.vals <= 0.05) # none are significant. 
-# The same is true whether default lag.max argument from acf() is used (10*log10(n)) or if only significant ACFs are used (b/c none of the ACFs for the CMR rates are significant)
+# The same is true whether default lag.max argument from acf() is used (10*log10(n)) 
 
 
 ####################################################
