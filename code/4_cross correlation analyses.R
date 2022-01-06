@@ -123,7 +123,7 @@ sum(p.vals <= 0.05) # none are significant.
 ## Plot raw and detrended time series
 
 # climate variables
-pdf("figures/Raw & detrended climate variables_1-3-22.pdf", height = 12, width = 10)
+#pdf("figures/Raw & detrended climate variables_1-3-22.pdf", height = 12, width = 10)
 
 layout(matrix(1:12, ncol = 2))
 
@@ -152,7 +152,7 @@ plot(seq(4.125, 1.125, -0.25), d13C.detrend, type = "o", pch = 16, xlab = "", yl
 
 mtext("Time (Ma)", side = 1, line = 3, at = 2.5, cex = 1)
 
-dev.off()
+#dev.off()
 
 
 # CMR rates
@@ -166,7 +166,7 @@ plot.titles2 <- c("Detrended E. Africa origination",
                   "Detrended Turkana origination",
                   "Detrended Turkana extinction")
 
-pdf("figures/Raw & detrended CMR rates_1-4-22.pdf", height = 10, width = 8)
+#pdf("figures/Raw & detrended CMR rates_1-4-22.pdf", height = 10, width = 8)
 
 layout(matrix(1:8, ncol = 2))
 
@@ -184,11 +184,11 @@ for(i in seq_along(ages)){
   plot(ages[[i]], cmr.rates.detrend[[i]], type = "o", pch = 16, xlab = "Time (Ma)", ylab = "Residuals", main = plot.titles2[i], cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5)
 }
 
-dev.off()
+#dev.off()
 
 
 ## CCF plot
-pdf("figures/CCF results_1-3-22.pdf", height = 10, width = 8)
+#pdf("figures/CCF results_1-3-22.pdf", height = 10, width = 8)
 
 par(mfrow = c(3, 2), mar = c(5 - 1, 4, 4, 2) + 0.1)
 
@@ -243,4 +243,4 @@ segments(x0 = 0, x1 = 4.5, y0 = ccf.turk.extinct$ccf.se * qnorm(0.975), lty = 2)
 segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.025), lty = 2)
 segments(x0 = 4.5, x1 = 9, y0 = ccf.res.extinct[[i]]$ccf.se * qnorm(0.975), lty = 2)
 
-dev.off()
+#dev.off()
