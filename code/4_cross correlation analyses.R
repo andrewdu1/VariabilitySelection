@@ -1,7 +1,7 @@
 # 4. cross-correlation analyses & plots
 
 # Author: Andrew Du
-# Date: 4-21-21 (revised 1-3-21)
+# Date: 4-21-21 (revised 2-20-21)
 
 
 ## Read in CMR results
@@ -154,17 +154,17 @@ mtext("Time (Ma)", side = 1, line = 3, at = 2.5, cex = 1)
 
 
 # CMR rates
-plot.titles1 <- c("Raw E. Africa origination", 
+plot.titles1 <- c("Raw E. Africa speciation", 
                  "Raw E. Africa extinction", 
-                 "Raw Turkana origination",
+                 "Raw Turkana speciation",
                  "Raw Turkana extinction")
 
-plot.titles2 <- c("Detrended E. Africa origination", 
+plot.titles2 <- c("Detrended E. Africa speciation", 
                   "Detrended E. Africa extinction", 
-                  "Detrended Turkana origination",
+                  "Detrended Turkana speciation",
                   "Detrended Turkana extinction")
 
-#pdf("figures/Raw & detrended CMR rates_1-4-22.pdf", height = 10, width = 8)
+#pdf("figures/Raw & detrended CMR rates_2-20-22.pdf", height = 10, width = 8)
 
 layout(matrix(1:8, ncol = 2))
 
@@ -186,7 +186,7 @@ for(i in seq_along(ages)){
 
 
 ## CCF plot
-#pdf("figures/CCF results_1-12-22.pdf", height = 10, width = 8)
+#pdf("figures/CCF results_2-20-22.pdf", height = 10, width = 8)
 
 par(mfrow = c(3, 2), mar = c(5 - 1, 4, 4, 2) + 0.1)
 
@@ -195,12 +195,12 @@ i <- 1
 
 ccf.mat <- cbind(as.numeric(ccf.res.orig[[i]]$ccf.hat), as.numeric(ccf.res.extinct[[i]]$ccf.hat))
 
-barplot(ccf.mat, beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", names.arg = c("Origination", "Extinction"), main = names(ccf.res.orig)[i], cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 2, legend.text = ccf.res.orig[[i]]$lag.n, args.legend = list(x = 3.5, y = 1, title = "Number of lags", bty = "n", cex = 1.25))
+barplot(ccf.mat, beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", names.arg = c("Speciation", "Extinction"), main = names(ccf.res.orig)[i], cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 2, legend.text = ccf.res.orig[[i]]$lag.n, args.legend = list(x = 3.5, y = 1, title = "Number of lags", bty = "n", cex = 1.25))
 
 abline(h = 0)
 abline(v = 4.5)
 
-# origination significance thresholds
+# speciation significance thresholds
 segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.025), lty = 2)
 segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.975), lty = 2)
 
@@ -213,12 +213,12 @@ for(i in seq_along(ccf.res.orig)[-1]){
   
   ccf.mat <- cbind(as.numeric(ccf.res.orig[[i]]$ccf.hat), as.numeric(ccf.res.extinct[[i]]$ccf.hat))
   
-  barplot(ccf.mat, beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", names.arg = c("Origination", "Extinction"), main = names(ccf.res.orig)[i], cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 2)
+  barplot(ccf.mat, beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", names.arg = c("Speciation", "Extinction"), main = names(ccf.res.orig)[i], cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 2)
   
   abline(h = 0)
   abline(v = 4.5)
   
-  # origination significance thresholds
+  # speciation significance thresholds
   segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.025), lty = 2)
   segments(x0 = 0, x1 = 4.5, y0 = ccf.res.orig[[i]]$ccf.se * qnorm(0.975), lty = 2)
   
@@ -228,12 +228,12 @@ for(i in seq_along(ccf.res.orig)[-1]){
 }
 
 # Turkana CCF results
-barplot(cbind(as.numeric(ccf.turk.orig$ccf.hat), as.numeric(ccf.turk.extinct$ccf.hat)), beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", main = colnames(clim.var)[ncol(clim.var)], names.arg = c("Origination", "Extinction"), cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 2)
+barplot(cbind(as.numeric(ccf.turk.orig$ccf.hat), as.numeric(ccf.turk.extinct$ccf.hat)), beside = TRUE, ylim = c(-1, 1), ylab = "Cross-correlation", main = colnames(clim.var)[ncol(clim.var)], names.arg = c("Speciation", "Extinction"), cex.axis = 1.5, cex.names = 1.5, cex.lab = 1.5, cex.main = 2)
 
 abline(h = 0)
 abline(v = 4.5)
 
-# origination significance thresholds
+# speciation significance thresholds
 segments(x0 = 0, x1 = 4.5, y0 = ccf.turk.orig$ccf.se * qnorm(0.025), lty = 2)
 segments(x0 = 0, x1 = 4.5, y0 = ccf.turk.orig$ccf.se * qnorm(0.975), lty = 2)
 
